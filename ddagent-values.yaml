@@ -1,0 +1,44 @@
+targetSystem: "linux"
+registry: gcr.io/datadoghq
+
+datadog:
+  apiKey: <DATADOG_API_KEY>
+  site:  # datadoghq.com
+  securityContext: {}
+  hostVolumeMountPropagation: None
+  logLevel: DEBUG
+  kubeStateMetricsEnabled: false
+  kubelet:
+    host:
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+    tlsVerify: false
+
+  dogstatsd:
+    port: 8125
+    originDetection: true
+    tags: []
+    tagCardinality: high
+    useSocketVolume: true
+    socketPath: /var/run/datadogs1/dsd.socket
+    hostSocketPath: /var/run/datadogs1/
+    useHostPort: true
+    useHostPID: true
+    nonLocalTraffic: true
+  collectEvents: true
+  leaderElection: true
+  processAgent:
+    enabled: true
+    processCollection: true
+  logs:
+    enabled: true
+    containerCollectAll: true
+    containerCollectUsingFiles: true
+  env:
+    - name: DD_ENV
+      value: testinghere
+    - name: DD_HOSTNAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
